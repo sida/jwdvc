@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,25 +11,33 @@
     <script src="./js/jwdc/dom.js"></script>
     <script src="./js/jwdc/wevdav.js"></script>
     <script src="./js/jwdc/template.js"></script>
+    <link rel="stylesheet" href="./css/main.css">
     <title>Document</title>
 </head>
+
 <body>
     <div id="current-path"></div>
     <div id="main-content">
         <div id="tool-bar">
+            <input type="file" name="" id="upload-file">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="" id=""></th>
+                    <th>name</th>
+                    <th>type</th>
+                    <th>size</th>
+                    <th>date</th>
+                </tr>
+            </thead>
+            <tbody id="file-list">
+            </tbody>
+        </table>
 
-        </div>
-        <div id="attribute-header">
-            <span class="file-check"><input type="checkbox" name="" id=""></span> 
-            <span class="file-name">name</span>
-            <span class="file-type">type</span>
-            <span class="file-size">size</span>
-            <span class="file-date">date</span>
-        </div>
-        <div id="file-list">
-
-        </div>
-    </div>    
+    </div>
+    </div>
     <script src="./js/main.js"></script>
 </body>
+
 </html>

@@ -53,9 +53,22 @@ JWDC.webdav = (() => {
         return ret;
     }
 
+    let _options = (url) => {
+        return axios({
+            method: 'OPTIONS',
+            url: url,
+        });
+    }
+
+    let _put = (url, data) => {
+        return axios.put(url, data);
+    }
+
     return {
         propfind: _propfind,
         parsePropfind: _parsePropfind,
+        options: _options,
+        put: _put,
     };
 
 })();
