@@ -7,7 +7,7 @@ JWDC.template = (() => {
         let type = ftype(file);
         let len = flen(file);
 
-        let htmlstring = `<tr><td><input type="checkbox" name="" id=""></td>
+        let htmlstring = `<tr><td><input type="checkbox" class="file-check" value="${file.name}"></td>
         <td class="file-name"> <a href="javascript:void(0)" onClick="JWDC.core.clickFilename('${file.name}')" >${file.name}</a></td>
         <td>${type}</td>
         <td>${len}</td>

@@ -28,8 +28,18 @@ JWDC.util = (() => {
         });
     }
 
+    let _searchFileInfo = (searchText) => {
+        for (const info of JWDC.file_info) {
+            if (info.name===searchText) {
+                return info;
+            }
+        }
+        return undefined;
+    }
+
     return {
         joinPath: _joinpath,
         readFile: _readFile,
+        searchFileInfo:_searchFileInfo,
     }
 })();

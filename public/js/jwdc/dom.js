@@ -7,9 +7,20 @@ JWDC.dom = (() => {
         elem.innerText = url;
     }
 
+    const upDirFileInfo ={
+        "name": '..',
+        "ext": '',
+        "href": '',
+        "length": '',
+        "lastmodified": '',
+        "date": 0,
+        "isFile": false
+    }
+
     let _cleanFileInfo = () => {
         let elem = document.getElementById('file-list');
         elem.innerHTML = '';
+        _addFileInfo(upDirFileInfo);
     }
 
     let _addFileInfo = (info) => {
