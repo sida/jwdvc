@@ -41,10 +41,15 @@ JWDC.util = (() => {
         return JWDC.util.joinPath(JWDC.core.getUrl(), filename);
     }
 
+    let _makeDirPath = (dirname) => {
+        return JWDC.util.joinPath(JWDC.core.getUrl(), dirname, '/');
+    }
+
     return {
         joinPath: _joinpath,
         readFile: _readFile,
         searchFileInfo: _searchFileInfo,
-        makeFullPath: _makeFullPath
+        makeFullPath: _makeFullPath,
+        makeDirPath: _makeDirPath
     }
 })();

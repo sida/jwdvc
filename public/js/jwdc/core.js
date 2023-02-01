@@ -128,6 +128,69 @@ JWDC.core = (() => {
         _asyncloadFileList();
     }
 
+    let _onMkDir = () => {
+        const inputname = prompt('ディレクトリ名を入力');
+        if (!inputname) {
+            return;
+        }
+        const name = String(inputname).trim().replace(/\/$/, '').replace(/^\//, '');
+        if (!name) {
+            return;
+        }
+        const dirPath = JWDC.util.makeDirPath(name);
+        JWDC.webdav.mkcol(dirPath);
+        console.log('mkdir!!:' + dirPath);
+        _asyncloadFileList();
+    }
+
+    let _onReload = () => {
+        _asyncloadFileList();
+    }
+
+    let _onRename = () => {
+        const elemList = document.getElementsByClassName('file-check');
+        for (const elem of elemList) {
+            console.log("checked:" + elem.checked + "   value:" + elem.value);
+            if (elem.checked) {
+                _rename(elem.value);
+            }
+        }
+        _asyncloadFileList();
+    }
+
+    function _rename(fromName) {
+        console.log(`rename ${fromName}`);
+
+        const inputname = prompt('新しい名前を入力');
+        if (!inputname) {
+            return;
+        }
+        const name = String(inputname).trim().replace(/\/$/, '').replace(/^\//, '');
+        if (!name) {
+            console.log('empty');
+            return;
+        }
+
+        const info = JWDC.util.searchFileInfo(fromName);
+        if (!info) {
+            console.log('no src');
+            return;
+        }
+
+        let toPath = '';
+        let fromPath = '';
+        if (info.isFile) {
+            toPath = JWDC.util.makeFullPath(name);
+            fromPath = JWDC.util.makeFullPath(info.name);
+        } else {
+            toPath = JWDC.util.makeDirPath(name);
+            fromPath = JWDC.util.makeDirPath(info.name);
+        }
+
+        console.log(`from:${fromPath} ==> to:${toPath}`);
+        JWDC.webdav.move(fromPath,toPath);
+    }
+
     return {
         init: _init,
         loadfilelist: _loadfilelist,
@@ -138,5 +201,8 @@ JWDC.core = (() => {
         clickFilename: _clickFilename,
         onDelete: _onDelete,
         getCurrentPath: _getCurrentPath,
+        onMkDir: _onMkDir,
+        onReload: _onReload,
+        onRename: _onRename,
     }
 })();

@@ -34,7 +34,21 @@ window.onload = () => {
         // JWDC.core.load();
     }
     fileInput.addEventListener('change', handleFileSelect);
+}
+
+function mkcol() {
+    const inputname = prompt('ディレクトリ名を入力');
+    // const tirmname = String(inputname).trim();
+    // const name1 = tirmname.replace(/\/$/,'');
+    // const name = name1.replace(/^\//,'');
+
+    const name = String(inputname).trim().replace(/\/$/,'').replace(/^\//,'');
 
 
+    if (!name) {
+        console.log('empty!');
+        return;
+    }
+    console.log('mkdir!!:' + name);
 
 }

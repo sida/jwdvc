@@ -17,11 +17,16 @@
 
 <body>
     <div id="current-path"></div>
+    <hr>
     <div id="main-content">
         <div id="tool-bar">
             <input type="file" name="" id="upload-file"><br>
+            <button onclick="JWDC.core.onReload();">更新</button>
+            <button onclick="JWDC.core.onRename();">名前変更</button>
             <button onclick="JWDC.core.onDelete();">削除</button>
+            <button onclick="JWDC.core.onMkDir();">ディレクトリ作成</button>
         </div>
+        <hr>
         <table>
             <thead>
                 <tr>

@@ -71,12 +71,31 @@ JWDC.webdav = (() => {
         });
     }
 
+    let _mkcol = (url) => {
+        return axios({
+            method: 'MKCOL',
+            url: url,
+        });
+    }
+
+    let _move = (from, to) => {
+        return axios({
+            method: 'MOVE',
+            url: from,
+            headers: {
+                'Destination': to
+            },
+        });
+    }
+
     return {
         propfind: _propfind,
         parsePropfind: _parsePropfind,
         options: _options,
         put: _put,
         delete: _delete,
+        mkcol: _mkcol,
+        move: _move,
     };
 
 })();
