@@ -7,26 +7,20 @@ JWDC.dom = (() => {
         elem.innerText = url;
     }
 
-    const upDirFileInfo = {
-        "name": '..',
-        "ext": '',
-        "href": '',
-        "length": '',
-        "lastmodified": '',
-        "date": 0,
-        "isFile": false
-    }
-
     let _cleanFileInfo = () => {
         let elem = document.getElementById('file-list');
         elem.innerHTML = '';
-        _addFileInfo(upDirFileInfo);
+        _addLine(JWDC.template.firstfileline());
     }
 
     let _addFileInfo = (info) => {
         let fileInfoHtml = JWDC.template.fileLine(info);
+        _addLine(fileInfoHtml);
+    }
+
+    let _addLine = (htmlString) => {
         let elem = document.getElementById('file-list');
-        elem.innerHTML = elem.innerHTML + fileInfoHtml;
+        elem.innerHTML = elem.innerHTML + htmlString;
     }
 
     let _update = () => {
@@ -44,18 +38,10 @@ JWDC.dom = (() => {
         }
     }
 
-    let _onChangeSelectAll = (checked) => {
-        const checkBoxList = document.getElementsByClassName('file-check');
-        for (const cb of checkBoxList) {
-            cb.checked = checked;
-        }
-    }
-
     return {
         setCurrentUrl: _setCurrentUrl,
         cleanFileInfo: _cleanFileInfo,
         addFileInfo: _addFileInfo,
         update: _update,
-        onChangeSelectAll: _onChangeSelectAll,
     }
 })();

@@ -16,6 +16,16 @@ JWDC.core = (() => {
     let _init = (config) => {
         JWDC.config = config;
         JWDC.pathStack.push(config.path);
+
+        // ファイルアップロードの設定
+        const fileInput = document.getElementById('upload-file');
+        const handleFileSelect = () => {
+            const files = fileInput.files;
+            JWDC.core.upload(files[0]);
+        }
+        fileInput.addEventListener('change', handleFileSelect);
+        // 表示更新
+        JWDC.core.load();
     }
 
     let _loadfilelist = () => {
@@ -84,8 +94,7 @@ JWDC.core = (() => {
         return JWDC.pathStack.slice(-1)[0];
     }
 
-    let _clickFilename = (filename) => {
-        console.log("click!!:" + filename);
+    let _onClickFilename = (filename) => {
         if (filename === '..') {
             _changeDirectory(filename);
             _asyncloadFileList();
@@ -104,11 +113,14 @@ JWDC.core = (() => {
         _asyncloadFileList();
     }
 
-    let _onDelete = () => {
+    let _onClickDelete = () => {
         const elemList = document.getElementsByClassName('file-check');
         for (const elem of elemList) {
             console.log("checked:" + elem.checked + "   value:" + elem.value);
             if (elem.checked) {
+                if (!elem.value) {
+                    continue;
+                }
                 const deletePath = JWDC.util.makeFullPath(elem.value);
                 // JWDC.webdav.delete(deletePath);
                 JWDC.webdav.delete(deletePath)
@@ -128,7 +140,7 @@ JWDC.core = (() => {
         _asyncloadFileList();
     }
 
-    let _onMkDir = () => {
+    let _onClickMkDir = () => {
         const inputname = prompt('ディレクトリ名を入力');
         if (!inputname) {
             return;
@@ -143,11 +155,11 @@ JWDC.core = (() => {
         _asyncloadFileList();
     }
 
-    let _onReload = () => {
+    let _onClickReload = () => {
         _asyncloadFileList();
     }
 
-    let _onRename = () => {
+    let _onClickRename = () => {
         const elemList = document.getElementsByClassName('file-check');
         for (const elem of elemList) {
             console.log("checked:" + elem.checked + "   value:" + elem.value);
@@ -191,6 +203,13 @@ JWDC.core = (() => {
         JWDC.webdav.move(fromPath,toPath);
     }
 
+    let _onChangeSelectAll = (checked) => {
+        const checkBoxList = document.getElementsByClassName('file-check');
+        for (const cb of checkBoxList) {
+            cb.checked = checked;
+        }
+    }
+
     return {
         init: _init,
         loadfilelist: _loadfilelist,
@@ -198,11 +217,12 @@ JWDC.core = (() => {
         getUrl: _getUrl,
         changeDirectory: _changeDirectory,
         upload: asyncUpload,
-        clickFilename: _clickFilename,
-        onDelete: _onDelete,
+        onClickFilename: _onClickFilename,
+        onClickDelete: _onClickDelete,
         getCurrentPath: _getCurrentPath,
-        onMkDir: _onMkDir,
-        onReload: _onReload,
-        onRename: _onRename,
+        onClickMkDir: _onClickMkDir,
+        onClickReload: _onClickReload,
+        onClickRename: _onClickRename,
+        onChangeSelectAll: _onChangeSelectAll,
     }
 })();

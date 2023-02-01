@@ -45,11 +45,30 @@ JWDC.util = (() => {
         return JWDC.util.joinPath(JWDC.core.getUrl(), dirname, '/');
     }
 
+    let _formatDate = (_date) => {
+        const date = new Date(_date);
+        const formatted = date
+            .toLocaleDateString("ja-JP", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                fractionalSecondDigits: 3,
+                hour12: false,
+            })
+            .split("/")
+            .join("-");
+        return formatted;
+    }
+
     return {
         joinPath: _joinpath,
         readFile: _readFile,
         searchFileInfo: _searchFileInfo,
         makeFullPath: _makeFullPath,
-        makeDirPath: _makeDirPath
+        makeDirPath: _makeDirPath,
+        formatDate: _formatDate,
     }
 })();

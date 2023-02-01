@@ -1,13 +1,22 @@
 'use strict';
 
 JWDC.template = (() => {
-    let _fileline = (file) => {
+    let _firstfileline = () => {
+        let htmlstring = `<tr><td></td>
+        <td class="file-name"> <a href="javascript:void(0)" onClick="JWDC.core.onClickFilename('..')" >..</a></td>
+        <td>[DIR]</td>
+        <td></td>
+        <td></td></tr>`;
 
+        return htmlstring;
+    };
+
+    let _fileline = (file) => {
         let dt = fdate(file.date);
         let type = ftype(file);
         let len = flen(file);
         let htmlstring = `<tr><td><input type="checkbox" class="file-check" value="${file.name}"></td>
-        <td class="file-name"> <a href="javascript:void(0)" onClick="JWDC.core.clickFilename('${file.name}')" >${file.name}</a></td>
+        <td class="file-name"> <a href="javascript:void(0)" onClick="JWDC.core.onClickFilename('${file.name}')" >${file.name}</a></td>
         <td>${type}</td>
         <td>${len}</td>
         <td>${dt}</td></tr>`;
@@ -16,24 +25,10 @@ JWDC.template = (() => {
     };
 
     function fdate(_date) {
-        if (_date==0) {
+        if (!_date) {
             return '';
         }
-        const date = new Date(_date);
-        const formatted = date
-            .toLocaleDateString("ja-JP", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-                fractionalSecondDigits: 3,
-                hour12: false,
-            })
-            .split("/")
-            .join("-");
-        return formatted;
+        return JWDC.util.formatDate(_date);
     }
 
     function ftype(file) {
@@ -52,6 +47,7 @@ JWDC.template = (() => {
 
     return {
         fileLine: _fileline,
+        firstfileline: _firstfileline,
     }
 
 })();
