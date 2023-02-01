@@ -47,9 +47,7 @@ JWDC.core = (() => {
         const reader = new FileReader();
         reader.onload = () => {
             let bin = reader.result;
-            let currentURL = JWDC.core.getUrl();
-            let url = JWDC.util.joinPath(currentURL, fileIF.name);
-
+            const url = JWDC.util.makeFullPath(fileIF.name);
             JWDC.webdav.put(url, bin);
         };
         reader.readAsArrayBuffer(fileIF);
@@ -57,15 +55,14 @@ JWDC.core = (() => {
 
     async function asyncUpload(fileIF) {
         const res = await JWDC.util.readFile(fileIF);
-        let currentURL = JWDC.core.getUrl();
-        let url = JWDC.util.joinPath(currentURL, fileIF.name);
+        const url = JWDC.util.makeFullPath(fileIF.name);
         await JWDC.webdav.put(url, res);
         // ディレクトのファイルリストを再取得
         _load();
     }
 
     let _changeDirectory = (path) => {
-        if (path==='..') {
+        if (path === '..') {
             if (JWDC.pathStack.length <= 1) {
                 return;
             }
@@ -83,9 +80,13 @@ JWDC.core = (() => {
         return url;
     }
 
+    let _getCurrentPath = () => {
+        return JWDC.pathStack.slice(-1)[0];
+    }
+
     let _clickFilename = (filename) => {
         console.log("click!!:" + filename);
-        if (filename==='..') {
+        if (filename === '..') {
             _changeDirectory(filename);
             _asyncloadFileList();
             return;
@@ -95,8 +96,7 @@ JWDC.core = (() => {
             return;
         }
         if (info.isFile) {
-            let currentURL = JWDC.core.getUrl();
-            const filePath = JWDC.util.joinPath(currentURL, info.name);
+            const filePath = JWDC.util.makeFullPath(info.name);
             window.location.href = filePath;
             return;
         }
@@ -104,11 +104,28 @@ JWDC.core = (() => {
         _asyncloadFileList();
     }
 
-    let _onDelete= ()=>{
+    let _onDelete = () => {
         const elemList = document.getElementsByClassName('file-check');
         for (const elem of elemList) {
-            console.log("checked:" + elem.checked +"   value:" + elem.value);
+            console.log("checked:" + elem.checked + "   value:" + elem.value);
+            if (elem.checked) {
+                const deletePath = JWDC.util.makeFullPath(elem.value);
+                // JWDC.webdav.delete(deletePath);
+                JWDC.webdav.delete(deletePath)
+                    .then(
+                        (response) => {
+                            console.log(response);
+                        }
+                    ).catch(
+                        (response) => {
+                            console.log(response);
+                        }
+                    );
+
+                console.log(`delete: ${deletePath}`);
+            }
         }
+        _asyncloadFileList();
     }
 
     return {
@@ -119,6 +136,7 @@ JWDC.core = (() => {
         changeDirectory: _changeDirectory,
         upload: asyncUpload,
         clickFilename: _clickFilename,
-        onDelete:_onDelete,
+        onDelete: _onDelete,
+        getCurrentPath: _getCurrentPath,
     }
 })();

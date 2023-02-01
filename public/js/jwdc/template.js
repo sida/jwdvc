@@ -6,7 +6,6 @@ JWDC.template = (() => {
         let dt = fdate(file.date);
         let type = ftype(file);
         let len = flen(file);
-
         let htmlstring = `<tr><td><input type="checkbox" class="file-check" value="${file.name}"></td>
         <td class="file-name"> <a href="javascript:void(0)" onClick="JWDC.core.clickFilename('${file.name}')" >${file.name}</a></td>
         <td>${type}</td>
@@ -17,6 +16,9 @@ JWDC.template = (() => {
     };
 
     function fdate(_date) {
+        if (_date==0) {
+            return '';
+        }
         const date = new Date(_date);
         const formatted = date
             .toLocaleDateString("ja-JP", {
@@ -26,6 +28,7 @@ JWDC.template = (() => {
                 hour: 'numeric',
                 minute: 'numeric',
                 second: 'numeric',
+                fractionalSecondDigits: 3,
                 hour12: false,
             })
             .split("/")

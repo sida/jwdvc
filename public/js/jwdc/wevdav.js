@@ -15,7 +15,7 @@ JWDC.webdav = (() => {
         const parser = new DOMParser();
         const xml = parser.parseFromString(dataXMLstring, "application/xml");
 
-        console.log(xml.documentElement.nodeName == "parsererror" ? "パース中にエラー発生" : xml);
+        console.log(xml.documentElement.nodeName == "parsererror" ? "パースエラー" : xml);
 
         if (xml.documentElement.nodeName == "parsererror") {
             return [];
@@ -64,11 +64,19 @@ JWDC.webdav = (() => {
         return axios.put(url, data);
     }
 
+    let _delete = (url) => {
+        return axios({
+            method: 'DELETE',
+            url: url,
+        });
+    }
+
     return {
         propfind: _propfind,
         parsePropfind: _parsePropfind,
         options: _options,
         put: _put,
+        delete: _delete,
     };
 
 })();

@@ -7,7 +7,7 @@ JWDC.dom = (() => {
         elem.innerText = url;
     }
 
-    const upDirFileInfo ={
+    const upDirFileInfo = {
         "name": '..',
         "ext": '',
         "href": '',
@@ -34,8 +34,20 @@ JWDC.dom = (() => {
         JWDC.dom.setCurrentUrl(url);
 
         JWDC.dom.cleanFileInfo();
+        const currentPath = JWDC.core.getCurrentPath();
         for (const info of JWDC.file_info) {
+            if (currentPath === info.name) {
+                // 現在位置の表示はスキップ
+                continue;
+            }
             JWDC.dom.addFileInfo(info);
+        }
+    }
+
+    let _onChangeSelectAll = (checked) => {
+        const checkBoxList = document.getElementsByClassName('file-check');
+        for (const cb of checkBoxList) {
+            cb.checked = checked;
         }
     }
 
@@ -44,5 +56,6 @@ JWDC.dom = (() => {
         cleanFileInfo: _cleanFileInfo,
         addFileInfo: _addFileInfo,
         update: _update,
+        onChangeSelectAll: _onChangeSelectAll,
     }
 })();
