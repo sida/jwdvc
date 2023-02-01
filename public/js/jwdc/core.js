@@ -25,32 +25,20 @@ JWDC.core = (() => {
         }
         fileInput.addEventListener('change', handleFileSelect);
         // 表示更新
-        JWDC.core.load();
+        _reload();
     }
 
-    let _loadfilelist = () => {
+    let _reload = async () => {
+        console.log('reload!!');
         const url = _getUrl();
-        return JWDC.webdav.propfind(url, 1)
-            .then(
-                (response) => {
-                    let json = JWDC.webdav.parsePropfind(response.data);
-                    JWDC.file_info = json;
-                }
-            );
-    }
-
-    let _load = () => {
-        _asyncloadFileList();
-    }
-
-    async function _asyncloadFileList() {
         try {
-            await JWDC.core.loadfilelist();
-        } catch (e) {
-            alert(e);
-            return;
+            const responsePropfind = await JWDC.webdav.propfind(url, 1)
+            let json = JWDC.webdav.parsePropfind(responsePropfind.data);
+            JWDC.file_info = json;
+            JWDC.dom.update();   
+        } catch(err) {
+            alert(err);
         }
-        JWDC.dom.update();
     }
 
     let _upload = (fileIF) => {
@@ -68,10 +56,11 @@ JWDC.core = (() => {
         const url = JWDC.util.makeFullPath(fileIF.name);
         await JWDC.webdav.put(url, res);
         // ディレクトのファイルリストを再取得
-        _load();
+        _reload();
     }
 
     let _changeDirectory = (path) => {
+        // TODO check exist dir
         if (path === '..') {
             if (JWDC.pathStack.length <= 1) {
                 return;
@@ -97,7 +86,7 @@ JWDC.core = (() => {
     let _onClickFilename = (filename) => {
         if (filename === '..') {
             _changeDirectory(filename);
-            _asyncloadFileList();
+            _reload();
             return;
         }
         const info = JWDC.util.searchFileInfo(filename);
@@ -110,7 +99,7 @@ JWDC.core = (() => {
             return;
         }
         _changeDirectory(info.name);
-        _asyncloadFileList();
+        _reload();
     }
 
     let _onClickDelete = () => {
@@ -137,7 +126,7 @@ JWDC.core = (() => {
                 console.log(`delete: ${deletePath}`);
             }
         }
-        _asyncloadFileList();
+        _reload();
     }
 
     let _onClickMkDir = () => {
@@ -152,11 +141,11 @@ JWDC.core = (() => {
         const dirPath = JWDC.util.makeDirPath(name);
         JWDC.webdav.mkcol(dirPath);
         console.log('mkdir!!:' + dirPath);
-        _asyncloadFileList();
+        _reload();
     }
 
     let _onClickReload = () => {
-        _asyncloadFileList();
+        _reload();
     }
 
     let _onClickRename = () => {
@@ -167,7 +156,7 @@ JWDC.core = (() => {
                 _rename(elem.value);
             }
         }
-        _asyncloadFileList();
+        _reload();
     }
 
     function _rename(fromName) {
@@ -212,8 +201,6 @@ JWDC.core = (() => {
 
     return {
         init: _init,
-        loadfilelist: _loadfilelist,
-        load: _load,
         getUrl: _getUrl,
         changeDirectory: _changeDirectory,
         upload: asyncUpload,

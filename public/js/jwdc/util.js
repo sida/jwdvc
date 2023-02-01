@@ -63,6 +63,10 @@ JWDC.util = (() => {
         return formatted;
     }
 
+    let _checkStatus = (status) => {
+        return Math.trunc(Number(status) / 100) * 100; 
+    }
+
     return {
         joinPath: _joinpath,
         readFile: _readFile,
