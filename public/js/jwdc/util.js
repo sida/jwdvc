@@ -64,7 +64,21 @@ JWDC.util = (() => {
     }
 
     let _checkStatus = (status) => {
-        return Math.trunc(Number(status) / 100) * 100; 
+        return Math.trunc(Number(status) / 100) * 100;
+    }
+
+    let _sortFile = () => {
+        JWDC.file_info.sort(
+            (a, b) => {
+                if (a.isFile != b.isFile) {
+                    if (a.isFile) { return 1; }
+                    return -1;
+                }
+                if (a.name > b.name) { return 1; }
+                if (a.name < b.name) { return -1; }
+                return 0;
+            }
+        );
     }
 
     return {
@@ -75,5 +89,6 @@ JWDC.util = (() => {
         makeDirPath: _makeDirPath,
         formatDate: _formatDate,
         checkStatus: _checkStatus,
+        sortFile: _sortFile,
     }
 })();

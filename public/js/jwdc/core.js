@@ -36,6 +36,7 @@ JWDC.core = (() => {
             const responsePropfind = await JWDC.webdav.propfind(url, 1);
             let json = JWDC.webdav.parsePropfind(responsePropfind.data);
             JWDC.file_info = json;
+            JWDC.util.sortFile();
             JWDC.dom.update();
         } catch (err) {
             alert(err);
