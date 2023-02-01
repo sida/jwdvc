@@ -1,3 +1,19 @@
 body {
     width: 100%;
 }
+
+label {
+    font-family: var(--nc-font-sans);
+    font-size: 1rem;
+    color: var(--nc-lk-tx);
+    background: var(--nc-lk-1);
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    margin-right: 3px;
+}
+
+input[type="file"] {
+    display: none;
+}
+
