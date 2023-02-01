@@ -21,7 +21,8 @@ JWDC.core = (() => {
         const fileInput = document.getElementById('upload-file');
         const handleFileSelect = () => {
             const files = fileInput.files;
-            JWDC.core.upload(files[0]);
+            // TODO check exist same name
+            _upload(files[0]);
         }
         fileInput.addEventListener('change', handleFileSelect);
         // 表示更新
@@ -32,7 +33,7 @@ JWDC.core = (() => {
         console.log('reload!!');
         const url = _getUrl();
         try {
-            const responsePropfind = await JWDC.webdav.propfind(url, 1)
+            const responsePropfind = await JWDC.webdav.propfind(url, 1);
             let json = JWDC.webdav.parsePropfind(responsePropfind.data);
             JWDC.file_info = json;
             JWDC.dom.update();   
@@ -41,17 +42,7 @@ JWDC.core = (() => {
         }
     }
 
-    let _upload = (fileIF) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-            let bin = reader.result;
-            const url = JWDC.util.makeFullPath(fileIF.name);
-            JWDC.webdav.put(url, bin);
-        };
-        reader.readAsArrayBuffer(fileIF);
-    }
-
-    async function asyncUpload(fileIF) {
+    let _upload = async (fileIF) => {
         const res = await JWDC.util.readFile(fileIF);
         const url = JWDC.util.makeFullPath(fileIF.name);
         await JWDC.webdav.put(url, res);
@@ -187,7 +178,7 @@ JWDC.core = (() => {
             toPath = JWDC.util.makeDirPath(name);
             fromPath = JWDC.util.makeDirPath(info.name);
         }
-
+        // TODO check same name
         console.log(`from:${fromPath} ==> to:${toPath}`);
         JWDC.webdav.move(fromPath,toPath);
     }
@@ -203,7 +194,6 @@ JWDC.core = (() => {
         init: _init,
         getUrl: _getUrl,
         changeDirectory: _changeDirectory,
-        upload: asyncUpload,
         onClickFilename: _onClickFilename,
         onClickDelete: _onClickDelete,
         getCurrentPath: _getCurrentPath,
