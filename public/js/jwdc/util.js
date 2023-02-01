@@ -74,5 +74,6 @@ JWDC.util = (() => {
         makeFullPath: _makeFullPath,
         makeDirPath: _makeDirPath,
         formatDate: _formatDate,
+        checkStatus: _checkStatus,
     }
 })();

@@ -36,8 +36,8 @@ JWDC.core = (() => {
             const responsePropfind = await JWDC.webdav.propfind(url, 1);
             let json = JWDC.webdav.parsePropfind(responsePropfind.data);
             JWDC.file_info = json;
-            JWDC.dom.update();   
-        } catch(err) {
+            JWDC.dom.update();
+        } catch (err) {
             alert(err);
         }
     }
@@ -45,18 +45,36 @@ JWDC.core = (() => {
     let _upload = async (fileIF) => {
         const res = await JWDC.util.readFile(fileIF);
         const url = JWDC.util.makeFullPath(fileIF.name);
+
+        const isExist = await _existURL(url);
+        if (isExist) {
+            alert("同名のファイルが存在します");
+            return;
+        }
+
         await JWDC.webdav.put(url, res);
         // ディレクトのファイルリストを再取得
         _reload();
     }
 
-    let _changeDirectory = (path) => {
-        // TODO check exist dir
+    let _changeDirectory = async (path) => {
         if (path === '..') {
             if (JWDC.pathStack.length <= 1) {
                 return;
             }
             JWDC.pathStack.pop();
+            return;
+        }
+        // 移動先確認
+        let copyPathStach = JWDC.pathStack.concat();
+        copyPathStach.push(path);
+        const newUrl = JWDC.util.joinPath(
+            JWDC.config.host,
+            ...copyPathStach,
+            '/');
+        const isExist = await _existURL(newUrl);
+        if (!isExist) {
+            alert("移動先のURLが存在しません");
             return;
         }
         JWDC.pathStack.push(path);
@@ -74,9 +92,9 @@ JWDC.core = (() => {
         return JWDC.pathStack.slice(-1)[0];
     }
 
-    let _onClickFilename = (filename) => {
+    let _onClickFilename = async (filename) => {
         if (filename === '..') {
-            _changeDirectory(filename);
+            await _changeDirectory(filename);
             _reload();
             return;
         }
@@ -89,7 +107,7 @@ JWDC.core = (() => {
             window.location.href = filePath;
             return;
         }
-        _changeDirectory(info.name);
+        await _changeDirectory(info.name);
         _reload();
     }
 
@@ -139,18 +157,18 @@ JWDC.core = (() => {
         _reload();
     }
 
-    let _onClickRename = () => {
+    let _onClickRename = async () => {
         const elemList = document.getElementsByClassName('file-check');
         for (const elem of elemList) {
             console.log("checked:" + elem.checked + "   value:" + elem.value);
             if (elem.checked) {
-                _rename(elem.value);
+                await _rename(elem.value);
             }
         }
         _reload();
     }
 
-    function _rename(fromName) {
+    async function _rename(fromName) {
         console.log(`rename ${fromName}`);
 
         const inputname = prompt('新しい名前を入力');
@@ -178,9 +196,14 @@ JWDC.core = (() => {
             toPath = JWDC.util.makeDirPath(name);
             fromPath = JWDC.util.makeDirPath(info.name);
         }
-        // TODO check same name
+
+        const isExist = await _existURL(toPath);
+        if (isExist) {
+            alert("同じ名前のパスが存在します");
+            return;
+        }
         console.log(`from:${fromPath} ==> to:${toPath}`);
-        JWDC.webdav.move(fromPath,toPath);
+        await JWDC.webdav.move(fromPath, toPath);
     }
 
     let _onChangeSelectAll = (checked) => {
@@ -190,10 +213,19 @@ JWDC.core = (() => {
         }
     }
 
+    let _existURL = async (url) => {
+        // TODO 末尾の/ありなしでチェックする
+        try {
+            await JWDC.webdav.propfind(url, 0);
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
     return {
         init: _init,
         getUrl: _getUrl,
-        changeDirectory: _changeDirectory,
         onClickFilename: _onClickFilename,
         onClickDelete: _onClickDelete,
         getCurrentPath: _getCurrentPath,
